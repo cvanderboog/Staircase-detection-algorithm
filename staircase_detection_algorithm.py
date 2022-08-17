@@ -206,8 +206,8 @@ def get_mixed_layers(p,ct,sa,c1,c2,c3,c4):
         ml.dr[k,l]     = rho[ks,layer].max()-rho[ks,layer].min()
         rhomax         = rho[ks,layer].argmax()
         rhomin         = rho[ks,layer].argmin()
-        ml.dT[k,l]     = -1028*alpha[ks,layer].mean()*(ct[k,layer[rhomax]]-ct[k,layer[rhomin]])
-        ml.dS[k,l]     = 1028*beta[ks,layer].mean()*(sa[k,layer[rhomax]]-sa[k,layer[rhomin]])
+        ml.dT[k,l]     = ct[k,layer[rhomax]]-ct[k,layer[rhomin]]
+        ml.dS[k,l]     = sa[k,layer[rhomax]]-sa[k,layer[rhomin]]
 
         ml.count[k,l]     = l+1
         masks.ml_num[ks,layer] = l+1
@@ -235,7 +235,7 @@ def get_mixed_layers(p,ct,sa,c1,c2,c3,c4):
   step 2+3:  label each gradient layer that fullfills the requirements for the gradient layer height
   and gradient layer properties (temperature, salinity and density variations) 
   """
-  ml_h_max  = np.ma.array([np.ma.abs(ml.height[:,1:]),np.ma.abs(ml.height[:,:-1])]).max(axis=0)
+  ml_h_max  = np.ma.array([np.ma.abs(ml.height[:,1:]),np.ma.abs(ml.height[:,:-1])]).min(axis=0)
   # check whether this makes a difference
   ml_h_max2 = np.ma.copy(ml_h_max)
   ml_h_max2[ml_h_max2>c4] = c4
